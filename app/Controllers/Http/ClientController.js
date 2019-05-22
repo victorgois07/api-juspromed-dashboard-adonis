@@ -1,11 +1,12 @@
 'use strict'
 
 const axios = require('axios')
+const Env = use('Env')
 
 const instance = axios.create({
   baseURL: 'https://sandbox-app.vindi.com.br:443/api/v1',
   headers: {
-    'Authorization': 'Basic X3hROHFjbkRHMy1JNE1aZXZaRjJMSmpJNGh1NUZOTkNhV2x0OWp6amlLazo=',
+    'Authorization': `Basic ${Env.get('NODE_ENV') === 'development' ? Env.get('TOKEN_HOMOLOGACAO_VINDI') : Env.get('TOKEN_PRODUCAO_VINDI')}`,
     'Content-Type': 'application/json'
   }
 })

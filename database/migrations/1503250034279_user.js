@@ -11,9 +11,10 @@ class UserSchema extends Schema {
       table.string('name', 80).notNullable()
       table.string('email', 254).notNullable().unique()
       table.string('password', 60).notNullable()
+      table.string('phone', 50)
       table.string('social_reason', 80)
       table.string('description', 254)
-      table.binary('active').notNullable()
+      table.integer('active').notNullable()
 
       table.integer('plan_id').unsigned().references('id').inTable('plans').onDelete('set null')
       table.integer('user_type_id').unsigned().references('id').inTable('user_types').onDelete('set null')

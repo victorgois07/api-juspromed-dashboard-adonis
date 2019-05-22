@@ -1,6 +1,9 @@
 'use strict'
 
 const User = use('App/Models/User')
+const City = use('App/Models/City')
+const State = use('App/Models/State')
+const UserType = use('App/Models/UserType')
 
 class UserController {
   async index ({ response }) {
@@ -16,8 +19,24 @@ class UserController {
   async store ({ request, response }) {
     try {
       const data = request.all()
-      const user = await User.create(data)
-      return response.status(200).send(user)
+
+      let state = null
+      let city = null
+
+      if (data.address || data.address !== null) {
+        state = (await State.create({ description: data.address.state, country: data.address.country })).toJSON()
+        city = (await City.create({ state_id: state.id, description: data.address.city })).toJSON()
+      }
+
+      const userType = (await UserType.create({ description: data.usertype.description })).toJSON()
+
+      data.user.city_id = city.id
+      data.user.state_id = state.id
+      data.user.user_type_id = userType.id
+
+      const user = await User.create(data.user)
+
+      return response.status(200).send({ user: user, state: state, city: city, userType: userType })
     } catch (e) {
       return response.status(e.status).send(e)
     }
