@@ -1,9 +1,6 @@
 'use strict'
 
 const User = use('App/Models/User')
-const City = use('App/Models/City')
-const State = use('App/Models/State')
-const UserType = use('App/Models/UserType')
 
 class UserController {
   async index ({ response }) {
@@ -14,35 +11,16 @@ class UserController {
     }
   }
 
-  async create ({ request, response, view }) {}
-
   async store ({ request, response }) {
     try {
       const data = request.all()
-
-      let state = null
-      let city = null
-
-      if (data.address || data.address !== null) {
-        state = (await State.create({ description: data.address.state, country: data.address.country })).toJSON()
-        city = (await City.create({ state_id: state.id, description: data.address.city })).toJSON()
-      }
-
-      const userType = (await UserType.create({ description: data.usertype.description })).toJSON()
-
-      data.user.city_id = city.id
-      data.user.state_id = state.id
-      data.user.user_type_id = userType.id
-
-      const user = await User.create(data.user)
-
-      return response.status(200).send({ user: user, state: state, city: city, userType: userType })
+      return await User.create(data)
     } catch (e) {
       return response.status(e.status).send(e)
     }
   }
 
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
     try {
       return await User.find(params.id)
     } catch (e) {
@@ -67,11 +45,10 @@ class UserController {
     }
   }
 
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
     try {
-      const user = await User.findBy('id', params.id)
-      user.delete()
-      return response.status(200).send(user)
+      const user = await User.find(params.id)
+      return user.delete()
     } catch (e) {
       return response.status(e.status).send(e)
     }

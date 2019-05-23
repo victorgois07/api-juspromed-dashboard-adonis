@@ -1,92 +1,52 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const Plan = use('App/Models/Plan')
 
-/**
- * Resourceful controller for interacting with plans
- */
 class PlanController {
-  /**
-   * Show a list of all plans.
-   * GET plans
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index ({ response }) {
+    try {
+      return await Plan.all()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new plan.
-   * GET plans/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new plan.
-   * POST plans
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      return await Plan.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Display a single plan.
-   * GET plans/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    try {
+      return await Plan.find(params.id)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to update an existing plan.
-   * GET plans/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update plan details.
-   * PUT or PATCH plans/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const plan = await Plan.find(params.id)
+      plan.merge(data)
+      plan.save()
+      return response.status(200).send(plan)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Delete a plan with id.
-   * DELETE plans/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const plan = await Plan.find(params.id)
+      return plan.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 

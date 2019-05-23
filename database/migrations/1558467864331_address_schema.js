@@ -8,7 +8,6 @@ class AddressSchema extends Schema {
     this.create('addresses', (table) => {
       table.increments()
       table.string('zipcode', 9).notNullable().unique()
-      table.string('public_plane', 254).notNullable()
       table.integer('number', 254).notNullable()
       table.string('additional_details', 254).notNullable()
       table.string('street', 254).notNullable()

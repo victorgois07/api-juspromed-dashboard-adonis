@@ -1,92 +1,52 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const State = use('App/Models/State')
 
-/**
- * Resourceful controller for interacting with states
- */
 class StateController {
-  /**
-   * Show a list of all states.
-   * GET states
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index ({ response }) {
+    try {
+      return await State.all()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new state.
-   * GET states/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new state.
-   * POST states
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      return await State.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Display a single state.
-   * GET states/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    try {
+      return await State.find(params.id)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to update an existing state.
-   * GET states/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update state details.
-   * PUT or PATCH states/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const state = await State.find(params.id)
+      state.merge(data)
+      state.save()
+      return response.status(200).send(state)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Delete a state with id.
-   * DELETE states/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const state = await State.find(params.id)
+      return state.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 

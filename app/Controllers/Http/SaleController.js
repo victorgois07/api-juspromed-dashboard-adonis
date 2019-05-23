@@ -1,92 +1,52 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const Sale = use('App/Models/Sale')
 
-/**
- * Resourceful controller for interacting with sales
- */
 class SaleController {
-  /**
-   * Show a list of all sales.
-   * GET sales
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index ({ response }) {
+    try {
+      return await Sale.all()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new sale.
-   * GET sales/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new sale.
-   * POST sales
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      return await Sale.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Display a single sale.
-   * GET sales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    try {
+      return await Sale.find(params.id)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to update an existing sale.
-   * GET sales/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update sale details.
-   * PUT or PATCH sales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const sale = await Sale.find(params.id)
+      sale.merge(data)
+      sale.save()
+      return response.status(200).send(sale)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Delete a sale with id.
-   * DELETE sales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const sale = await Sale.find(params.id)
+      return sale.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 

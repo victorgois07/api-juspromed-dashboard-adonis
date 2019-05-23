@@ -13,6 +13,7 @@ class UserSchema extends Schema {
       table.string('password', 60).notNullable()
       table.string('phone', 50)
       table.string('social_reason', 80)
+      table.integer('vindi_client_id')
       table.string('description', 254)
       table.integer('active').notNullable()
 

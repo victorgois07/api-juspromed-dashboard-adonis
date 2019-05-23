@@ -1,85 +1,58 @@
 'use strict'
 
+const Address = use('App/Models/Address')
+// eslint-disable-next-line camelcase
+const { endpoint_filter } = use('App/Helpers')
+
 class AddressController {
-  /**
-   * Show a list of all addresses.
-   * GET addresses
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index ({ response, request }) {
+    try {
+      const req = request.all()
+      return req.filter ? endpoint_filter(req.filter, 'addresses', 'id') : await Address.all()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new address.
-   * GET addresses/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new address.
-   * POST addresses
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      return await Address.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Display a single address.
-   * GET addresses/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    try {
+      return await Address.query()
+        .where('id', params.id)
+        .with('address_city')
+        .fetch()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to update an existing address.
-   * GET addresses/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update address details.
-   * PUT or PATCH addresses/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const address = await Address.find(params.id)
+      address.merge(data)
+      address.save()
+      return response.status(200).send(address)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Delete a address with id.
-   * DELETE addresses/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const address = await Address.find(params.id)
+      return address.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 

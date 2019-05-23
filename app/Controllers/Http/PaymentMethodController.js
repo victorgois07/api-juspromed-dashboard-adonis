@@ -1,92 +1,52 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const PaymentMethod = use('App/Models/PaymentMethod')
 
-/**
- * Resourceful controller for interacting with paymentmethods
- */
 class PaymentMethodController {
-  /**
-   * Show a list of all paymentmethods.
-   * GET paymentmethods
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index ({ response }) {
+    try {
+      return await PaymentMethod.all()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new paymentmethod.
-   * GET paymentmethods/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new paymentmethod.
-   * POST paymentmethods
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      return await PaymentMethod.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Display a single paymentmethod.
-   * GET paymentmethods/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
+    try {
+      return await PaymentMethod.find(params.id)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Render a form to update an existing paymentmethod.
-   * GET paymentmethods/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update paymentmethod details.
-   * PUT or PATCH paymentmethods/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const paymentmethod = await PaymentMethod.find(params.id)
+      paymentmethod.merge(data)
+      paymentmethod.save()
+      return response.status(200).send(paymentmethod)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 
-  /**
-   * Delete a paymentmethod with id.
-   * DELETE paymentmethods/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const paymentmethod = await PaymentMethod.find(params.id)
+      return paymentmethod.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 

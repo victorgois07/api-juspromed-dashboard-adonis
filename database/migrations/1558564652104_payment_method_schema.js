@@ -10,7 +10,7 @@ class PaymentMethodSchema extends Schema {
       table.string('public_name', 254).notNullable().unique()
       table.string('name', 254).notNullable()
       table.string('code', 254).notNullable().unique()
-      table.string('tyoe', 254).notNullable()
+      table.string('type', 254).notNullable()
       table.timestamps()
     })
   }

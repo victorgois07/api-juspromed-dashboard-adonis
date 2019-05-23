@@ -3,69 +3,50 @@
 const UserType = use('App/Models/UserType')
 
 class UserTypeController {
-  async index ({ request, response, view }) {
+  async index ({ response }) {
     try {
       return await UserType.all()
     } catch (e) {
       return response.status(e.status).send(e)
     }
   }
-  async create ({ request, response, view }) {}
 
   async store ({ request, response }) {
     try {
       const data = request.all()
-      const usertype = await UserType.create(data)
+      return await UserType.create(data)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
+  }
+
+  async show ({ params, response }) {
+    try {
+      return await UserType.find(params.id)
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
+  }
+
+  async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const usertype = await UserType.find(params.id)
+      usertype.merge(data)
+      usertype.save()
       return response.status(200).send(usertype)
     } catch (e) {
       return response.status(e.status).send(e)
     }
   }
 
-  /**
-   * Display a single usertype.
-   * GET usertypes/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing usertype.
-   * GET usertypes/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update usertype details.
-   * PUT or PATCH usertypes/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a usertype with id.
-   * DELETE usertypes/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    try {
+      const usertype = await UserType.find(params.id)
+      return usertype.delete()
+    } catch (e) {
+      return response.status(e.status).send(e)
+    }
   }
 }
 
