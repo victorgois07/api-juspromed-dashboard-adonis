@@ -84,6 +84,7 @@
       <find>&quot;</find>
       <find>address</find>
       <find>city</find>
+      <find>;</find>
     </findStrings>
     <replaceStrings>
       <replace>'</replace>
