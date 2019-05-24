@@ -1,53 +1,45 @@
 'use strict'
 
-const Plan = use('App/Models/Plan')
+const axios = require('axios')
+const Env = use('Env')
 
 class PlanController {
+  constructor () {
+    this.req = axios.create({
+      baseURL: 'https://sandbox-app.vindi.com.br:443/api/v1',
+      headers: {
+        'Authorization': `Basic ${Env.get('NODE_ENV') === 'development' ? Env.get('TOKEN_HOMOLOGACAO_VINDI') : Env.get('TOKEN_PRODUCAO_VINDI')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
   async index ({ response }) {
-    try {
-      return await Plan.all()
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
+    return new Promise(async (resolve, reject) => {
+      const filter = request.all()
+      if(filter.filter){
+        this.req.get(`/plans?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
+          resolve(data.data.plans)
+        }).catch((error) => {
+          reject(error)
+        })
+      } else {
+        this.req.get('/plans?sort_by=created_at&sort_order=desc').then(async (data) => {
+          resolve(data.data.plans)
+        }).catch((error) => {
+          reject(error)
+        })
+      }
+    })
   }
 
-  async store ({ request, response }) {
-    try {
-      const data = request.all()
-      return await Plan.create(data)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async store ({ request, response }) {}
 
-  async show ({ params, response }) {
-    try {
-      return await Plan.find(params.id)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async show ({ params, response }) {}
 
-  async update ({ params, request, response }) {
-    try {
-      const data = request.all()
-      const plan = await Plan.find(params.id)
-      plan.merge(data)
-      plan.save()
-      return response.status(200).send(plan)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async update ({ params, request, response }) {}
 
-  async destroy ({ params, response }) {
-    try {
-      const plan = await Plan.find(params.id)
-      return plan.delete()
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async destroy ({ params, response }) {}
 }
 
 module.exports = PlanController

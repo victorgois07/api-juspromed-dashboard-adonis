@@ -1,53 +1,45 @@
 'use strict'
 
-const PaymentMethod = use('App/Models/PaymentMethod')
+const axios = require('axios')
+const Env = use('Env')
 
 class PaymentMethodController {
+  constructor () {
+    this.req = axios.create({
+      baseURL: 'https://sandbox-app.vindi.com.br:443/api/v1',
+      headers: {
+        'Authorization': `Basic ${Env.get('NODE_ENV') === 'development' ? Env.get('TOKEN_HOMOLOGACAO_VINDI') : Env.get('TOKEN_PRODUCAO_VINDI')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
   async index ({ response }) {
-    try {
-      return await PaymentMethod.all()
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
+    return new Promise(async (resolve, reject) => {
+      const filter = request.all()
+      if(filter.filter){
+        this.req.get(`/payment_methods?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
+          resolve(data.data.payment_methods)
+        }).catch((error) => {
+          reject(error)
+        })
+      } else {
+        this.req.get('/payment_methods?sort_by=created_at&sort_order=desc').then(async (data) => {
+          resolve(data.data.payment_methods)
+        }).catch((error) => {
+          reject(error)
+        })
+      }
+    })
   }
 
-  async store ({ request, response }) {
-    try {
-      const data = request.all()
-      return await PaymentMethod.create(data)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async store ({ request, response }) {}
 
-  async show ({ params, response }) {
-    try {
-      return await PaymentMethod.find(params.id)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async show ({ params, response }) {}
 
-  async update ({ params, request, response }) {
-    try {
-      const data = request.all()
-      const paymentmethod = await PaymentMethod.find(params.id)
-      paymentmethod.merge(data)
-      paymentmethod.save()
-      return response.status(200).send(paymentmethod)
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async update ({ params, request, response }) {}
 
-  async destroy ({ params, response }) {
-    try {
-      const paymentmethod = await PaymentMethod.find(params.id)
-      return paymentmethod.delete()
-    } catch (e) {
-      return response.status(e.status).send(e)
-    }
-  }
+  async destroy ({ params, response }) {}
 }
 
 module.exports = PaymentMethodController
