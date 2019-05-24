@@ -2,30 +2,20 @@
 
 const Env = use('Env')
 const req = require('request')
+const config = use('App/Require')
 
 class TransactionController {
   constructor () {
-    this.header = {
-      'cache-control': 'no-cache',
-      Connection: 'keep-alive',
-      'accept-encoding': 'gzip, deflate',
-      Host: Env.get('HOSTVINDIAPI'),
-      'Postman-Token':
-        'd17cf374-4d15-49d2-b67e-8b283a14eebf,eb33579c-ca55-4d3c-96b2-6ca60a91d52e',
-      'Cache-Control': 'no-cache',
-      Accept: '*/*',
-      'User-Agent': 'PostmanRuntime/7.13.0',
-      Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
-    }
+    this.baseurl = 'transactions'
   }
 
-  async index ({ request, response, view }) {
+  async index ({ request }) {
     return new Promise(async (resolve, reject) => {
       const filter = request.all()
       let options = {
         method: 'GET',
-        url: `${Env.get('BASEURL')}/transactions`,
-        headers: this.header
+        url: `${Env.get('BASEURL')}/${this.baseurl}`,
+        headers: config.header
       }
       if (filter.filter) {
         options.qs = {
@@ -43,73 +33,52 @@ class TransactionController {
     })
   }
 
-  /**
-   * Render a form to be used for creating a new transaction.
-   * GET transactions/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store ({ request }) {
+    return new Promise(async (resolve, reject) => {
+      config.header['Content-Type'] = 'application/json'
+      const data = request.all()
+      let options = {
+        method: 'POST',
+        url: `${Env.get('BASEURL')}/${this.baseurl}`,
+        headers: config.header,
+        body: JSON.stringify(data)
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
   }
 
-  /**
-   * Create/save a new transaction.
-   * POST transactions
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show ({ params }) {
+    return new Promise(async (resolve, reject) => {
+      let options = {
+        method: 'GET',
+        url: `${Env.get('BASEURL')}/${this.baseurl}/${params.id}`,
+        headers: config.header
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
   }
 
-  /**
-   * Display a single transaction.
-   * GET transactions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing transaction.
-   * GET transactions/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update transaction details.
-   * PUT or PATCH transactions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a transaction with id.
-   * DELETE transactions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async update ({ params, request }) {
+    return new Promise(async (resolve, reject) => {
+      config.header['Content-Type'] = 'application/json'
+      const data = request.all()
+      let options = {
+        method: 'PUT',
+        url: `${Env.get('BASEURL')}/${this.baseurl}/${params.id}`,
+        headers: config.header,
+        body: JSON.stringify(data)
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
   }
 }
 
