@@ -16,11 +16,20 @@ class ClientController {
 
   async index ({ request, response, view }) {
     return new Promise(async (resolve, reject) => {
-      this.req.get('/customers').then(async (data) => {
-        resolve(data.data.customers)
-      }).catch((error) => {
-        reject(error)
-      })
+      const filter = request.all()
+      if(filter.filter){
+        this.req.get(`/customers?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
+          resolve(data.data.customers)
+        }).catch((error) => {
+          reject(error)
+        })
+      } else {
+        this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
+          resolve(data.data.customers)
+        }).catch((error) => {
+          reject(error)
+        })
+      }
     })
   }
 
