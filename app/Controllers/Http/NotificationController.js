@@ -1,35 +1,45 @@
 'use strict'
 
-const axios = require('axios')
 const Env = use('Env')
+const req = require('request')
 
 class NotificationController {
   constructor () {
-    this.req = axios.create({
-      baseURL: 'https://sandbox-app.vindi.com.br:443/api/v1',
-      headers: {
-        'Authorization': `Basic ${Env.get('NODE_ENV') === 'development' ? Env.get('TOKEN_HOMOLOGACAO_VINDI') : Env.get('TOKEN_PRODUCAO_VINDI')}`,
-        'Content-Type': 'application/json'
-      }
-    })
+    this.header = {
+      'cache-control': 'no-cache',
+      Connection: 'keep-alive',
+      'accept-encoding': 'gzip, deflate',
+      Host: Env.get('HOSTVINDIAPI'),
+      'Postman-Token':
+        'd17cf374-4d15-49d2-b67e-8b283a14eebf,eb33579c-ca55-4d3c-96b2-6ca60a91d52e',
+      'Cache-Control': 'no-cache',
+      Accept: '*/*',
+      'User-Agent': 'PostmanRuntime/7.13.0',
+      Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
+    }
   }
 
   async index ({ request, response, view }) {
     return new Promise(async (resolve, reject) => {
       const filter = request.all()
-      if(filter.filter){
-        this.req.get(`/notifications?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
-          resolve(data.data.notifications)
-        }).catch((error) => {
-          reject(error)
-        })
-      } else {
-        this.req.get('/notifications?sort_by=created_at&sort_order=desc').then(async (data) => {
-          resolve(data.data.notifications)
-        }).catch((error) => {
-          reject(error)
-        })
+      let options = {
+        method: 'GET',
+        url: `${Env.get('BASEURL')}/notifications`,
+        headers: this.header
       }
+      if (filter.filter) {
+        options.qs = {
+          query: filter.filter.query,
+          sort_by: 'created_at',
+          sort_order: 'desc'
+        }
+      } else {
+        options.qs = { sort_by: 'created_at', sort_order: 'desc' }
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
     })
   }
 
