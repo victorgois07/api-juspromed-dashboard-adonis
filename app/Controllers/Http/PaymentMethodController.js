@@ -34,7 +34,7 @@ class PaymentMethodController {
           sort_order: 'desc'
         }
       } else {
-        options.qs = { sort_by: 'created_at', sort_order: 'desc' }
+        options.qs = { sort_order: 'desc' }
       }
       req(options, (error, response, body) => {
         if (error) throw new Error(error)
