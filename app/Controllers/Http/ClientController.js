@@ -2,6 +2,7 @@
 
 const axios = require('axios')
 const Env = use('Env')
+const CircularJSON = require('circular-json');
 
 class ClientController {
   constructor () {
@@ -25,8 +26,8 @@ class ClientController {
         })
       } else {
         this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
-          console.log(data)
-          resolve(data.data.customers)
+          let json = CircularJSON.stringify(data)
+          resolve(json.data.customers)
         }).catch((error) => {
           reject(error)
         })
