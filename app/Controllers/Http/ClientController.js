@@ -24,10 +24,7 @@ class ClientController {
           reject(error)
         })
       } else {
-        axios.get('https://sandbox-app.vindi.com.br:443/api/v1/customers?sort_by=created_at&sort_order=desc',{headers: {
-          'Authorization': `Basic ${Env.get('NODE_ENV') === 'development' ? Env.get('TOKEN_HOMOLOGACAO_VINDI') : Env.get('TOKEN_PRODUCAO_VINDI')}`,
-          'Content-Type': 'application/json'
-        }}).then(async (data) => {
+        this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
           console.log(data)
           resolve(data.data.customers)
         }).catch((error) => {
