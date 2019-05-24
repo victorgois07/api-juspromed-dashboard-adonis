@@ -25,6 +25,8 @@ class ClientController {
         })
       } else {
         this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
+          console.log('CHEGOU')
+          console.log(data.data)
           resolve(data.data.customers)
         }).catch((error) => {
           reject(error)
