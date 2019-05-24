@@ -17,22 +17,20 @@ class ClientController {
   async index ({ request, response, view }) {
     return new Promise(async (resolve, reject) => {
       const filter = request.all()
-      console.log(filter)
-      // if(filter.filter){
-      //   this.req.get(`/customers?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
-      //     resolve(data.data.customers)
-      //   }).catch((error) => {
-      //     reject(error)
-      //   })
-      // } else {
-      //   this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
-      //     console.log('CHEGOU')
-      //     console.log(data.data)
-      //     resolve(data.data.customers)
-      //   }).catch((error) => {
-      //     reject(error)
-      //   })
-      // }
+      if(filter.filter){
+        this.req.get(`/customers?query=${filter.filter.query}&sort_by=created_at&sort_order=desc`).then(async (data) => {
+          resolve(data.data.customers)
+        }).catch((error) => {
+          reject(error)
+        })
+      } else {
+        this.req.get('/customers?sort_by=created_at&sort_order=desc').then(async (data) => {
+          console.log(data)
+          resolve(data.data.customers)
+        }).catch((error) => {
+          reject(error)
+        })
+      }
     })
   }
 
