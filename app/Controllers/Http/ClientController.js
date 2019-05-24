@@ -15,11 +15,7 @@ class ClientController {
       'Cache-Control': 'no-cache',
       Accept: '*/*',
       'User-Agent': 'PostmanRuntime/7.13.0',
-      Authorization: `Basic ${
-        Env.get('NODE_ENV') === 'development'
-          ? Env.get('TOKEN_HOMOLOGACAO_VINDI')
-          : Env.get('TOKEN_PRODUCAO_VINDI')
-      }`
+      Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
     }
   }
 
