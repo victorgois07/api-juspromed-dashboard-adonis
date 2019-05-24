@@ -2,21 +2,11 @@
 
 const Env = use('Env')
 const req = require('request')
+const config = use('App/Require')
 
 class PlanController {
   constructor () {
-    this.header = {
-      'cache-control': 'no-cache',
-      Connection: 'keep-alive',
-      'accept-encoding': 'gzip, deflate',
-      Host: Env.get('HOSTVINDIAPI'),
-      'Postman-Token':
-        'd17cf374-4d15-49d2-b67e-8b283a14eebf,eb33579c-ca55-4d3c-96b2-6ca60a91d52e',
-      'Cache-Control': 'no-cache',
-      Accept: '*/*',
-      'User-Agent': 'PostmanRuntime/7.13.0',
-      Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
-    }
+    this.baseurl = 'plans'
   }
 
   async index ({ request }) {
@@ -24,8 +14,8 @@ class PlanController {
       const filter = request.all()
       let options = {
         method: 'GET',
-        url: `${Env.get('BASEURL')}/plans`,
-        headers: this.header
+        url: `${Env.get('BASEURL')}/${this.baseurl}`,
+        headers: config.header
       }
       if (filter.filter) {
         options.qs = {
@@ -43,13 +33,53 @@ class PlanController {
     })
   }
 
-  async store ({ request, response }) {}
+  async store ({ request }) {
+    return new Promise(async (resolve, reject) => {
+      config.header['Content-Type'] = 'application/json'
+      const data = request.all()
+      let options = {
+        method: 'POST',
+        url: `${Env.get('BASEURL')}/${this.baseurl}`,
+        headers: config.header,
+        body: JSON.stringify(data)
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
+  }
 
-  async show ({ params, response }) {}
+  async show ({ params }) {
+    return new Promise(async (resolve, reject) => {
+      let options = {
+        method: 'GET',
+        url: `${Env.get('BASEURL')}/${this.baseurl}/${params.id}`,
+        headers: config.header
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
+  }
 
-  async update ({ params, request, response }) {}
-
-  async destroy ({ params, response }) {}
+  async update ({ params, request }) {
+    return new Promise(async (resolve, reject) => {
+      config.header['Content-Type'] = 'application/json'
+      const data = request.all()
+      let options = {
+        method: 'PUT',
+        url: `${Env.get('BASEURL')}/${this.baseurl}/${params.id}`,
+        headers: config.header,
+        body: JSON.stringify(data)
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        resolve(JSON.parse(body))
+      })
+    })
+  }
 }
 
 module.exports = PlanController
