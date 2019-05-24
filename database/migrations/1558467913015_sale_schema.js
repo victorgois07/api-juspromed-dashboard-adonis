@@ -17,6 +17,7 @@ class SaleSchema extends Schema {
       table.integer('payment_method_id').unsigned().references('id').inTable('payment_methods').onDelete('set null')
       table.integer('user_client_id').unsigned().references('id').inTable('users').onDelete('set null')
       table.integer('user_salesman_id').unsigned().references('id').inTable('users').onDelete('set null')
+      table.integer('plan_id').unsigned().references('id').inTable('plans').onDelete('set null')
 
       table.timestamps()
     })
