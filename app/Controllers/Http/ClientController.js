@@ -14,17 +14,16 @@ class ClientController {
       const filter = request.all()
       let options = {
         method: 'GET',
-        url: `${Env.get('BASEURL')}/${this.baseurl}`,
+        url: `${Env.get('BASEURL')}/${this.baseurl}?page=${filter.filter.page ||
+          1}&per_page=${filter.filter.limit || 10}&sort_by=${filter.filter
+          .sort_by || 'created_at'}&sort_order=${filter.filter.sort_order ||
+          'desc'}`,
         headers: config.header
       }
       if (filter.filter) {
         options.qs = {
-          query: filter.filter.query,
-          sort_by: 'created_at',
-          sort_order: 'desc'
+          query: filter.filter.query
         }
-      } else {
-        options.qs = { sort_by: 'created_at', sort_order: 'desc' }
       }
       req(options, (error, response, body) => {
         if (error) throw new Error(error)
