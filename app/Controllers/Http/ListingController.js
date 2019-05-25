@@ -90,6 +90,30 @@ class ListingController {
       resolve(counts)
     })
   }
+
+  async countactive () {
+    return new Promise(async (resolve, reject) => {
+      let options = {
+        method: 'GET',
+        url: `${Env.get('BASEURL')}/customers`,
+        headers: config.header
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        const client = (JSON.parse(body)).customers
+        let active = 0
+        let inactive = 0
+        client.map(async (data) => {
+          if (data.status === 'inactive') {
+            inactive++
+          } else {
+            active++
+          }
+        })
+        resolve({ active: active, inactive: inactive })
+      })
+    })
+  }
 }
 
 module.exports = ListingController
