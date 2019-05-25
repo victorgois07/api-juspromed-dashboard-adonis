@@ -43,6 +43,53 @@ class ListingController {
       )
     })
   }
+
+  async chargesState () {
+    return new Promise(async (resolve, reject) => {
+      req(
+        {
+          method: 'GET',
+          url: `${Env.get(
+            'BASEURL'
+          )}/subscriptions?page=1&query=status%3A%22active%22&sort_by=created_at&sort_order=desc`,
+          headers: config.header
+        },
+        (error, response, body) => {
+          if (error) throw new Error(error)
+          const client = JSON.parse(body).subscriptions
+          let list = []
+          let i = 0
+          client.map(async data => {
+            req(
+              {
+                method: 'GET',
+                url: `${Env.get('BASEURL')}/customers/${data.customer.id}`,
+                headers: config.header
+              },
+              (error, response, body) => {
+                if (error) throw new Error(error)
+                const customer = JSON.parse(body).customer
+                list.push(customer.address.state)
+                i++
+                if (i === client.length - 1) resolve(this.count(list))
+              }
+            )
+          })
+        }
+      )
+    })
+  }
+
+  // eslint-disable-next-line camelcase
+  async count (array_elements) {
+    return new Promise(async (resolve, reject) => {
+      let counts = {}
+      array_elements.forEach(x => {
+        counts[x] = (counts[x] || 0) + 1
+      })
+      resolve(counts)
+    })
+  }
 }
 
 module.exports = ListingController

@@ -9,6 +9,7 @@ Route.group(() => {
   Route.resource('/api/plan', 'PlanController')
   Route.resource('/api/client', 'ClientController')
   Route.get('/api/listclient', 'ListingController.listClient')
+  Route.get('/api/state/sale', 'ListingController.chargesState')
   Route.resource('/api/address', 'AddressController')
   Route.resource('/api/user', 'UserController')
   Route.resource('/api/remuneration', 'RemunerationController')
