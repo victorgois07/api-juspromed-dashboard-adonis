@@ -9,10 +9,10 @@ module.exports = {
     'accept-encoding': 'gzip, deflate',
     Host: Env.get('HOSTVINDIAPI'),
     'Postman-Token':
-      'd17cf374-4d15-49d2-b67e-8b283a14eebf,eb33579c-ca55-4d3c-96b2-6ca60a91d52e',
+      '2ff160a6-e57a-426f-8e36-9ec1ee9f9b60,9af0c667-fbb7-4c77-ad30-41689fabfede',
     'Cache-Control': 'no-cache',
     Accept: '*/*',
     'User-Agent': 'PostmanRuntime/7.13.0',
-    Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
+    Authorization: `Basic ${Env.get('TOKEN_PRODUCAO_VINDI')}`
   }
 }
