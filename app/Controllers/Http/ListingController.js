@@ -31,6 +31,7 @@ class ListingController {
             listclient.id = data.customer.id
             listclient.username = data.customer.email
             listclient.name = data.customer.name
+            listclient.status = data.customer.status
             listclient.vendedor = null
             listclient.plano = data.plan.name
             listclient.valor =
