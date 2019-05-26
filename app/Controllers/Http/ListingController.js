@@ -27,6 +27,7 @@ class ListingController {
           let list = []
           client.map(async data => {
             let listclient = {}
+            listclient.id = data.customer.id
             listclient.username = data.customer.email
             listclient.name = data.customer.name
             listclient.vendedor = null
