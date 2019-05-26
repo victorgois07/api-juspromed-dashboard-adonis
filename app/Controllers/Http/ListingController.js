@@ -27,11 +27,12 @@ class ListingController {
           const client = JSON.parse(body).subscriptions
           let list = []
           client.map(async data => {
+            console.log(data.customer.status)
             let listclient = {}
             listclient.id = data.customer.id
             listclient.username = data.customer.email
             listclient.name = data.customer.name
-            listclient.status = data.customer.status
+            listclient.status = data.status
             listclient.vendedor = null
             listclient.plano = data.plan.name
             listclient.valor =
