@@ -131,10 +131,10 @@ class ListingController {
         let pending = 0
         let total = 0
         client.map(async (data) => {
-          if (data.status === 'pending') {
-            let a = moment(data.due_at)
-            let b = moment()
-            if (a.diff(b, 'seconds') < 0) pending++
+          let a = moment(data.charges[0].due_at)
+          let b = moment()
+          if (data.charges[0].status !== 'paid' && a.diff(b, 'days') < 0) {
+            pending++
           } else {
             total += parseFloat(data.amount)
             paid++
