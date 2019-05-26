@@ -11,6 +11,7 @@ Route.group(() => {
   Route.get('/api/listclient', 'ListingController.listClient')
   Route.get('/api/state/sale', 'ListingController.chargesState')
   Route.get('/api/count/client', 'ListingController.countactive')
+  Route.get('/api/count/fatura', 'ListingController.totPaid')
   Route.resource('/api/address', 'AddressController')
   Route.resource('/api/user', 'UserController')
   Route.resource('/api/remuneration', 'RemunerationController')

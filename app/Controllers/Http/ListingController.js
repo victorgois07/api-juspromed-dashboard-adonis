@@ -4,6 +4,7 @@ const Env = use('Env')
 const req = require('request')
 const config = use('App/Require')
 const { paginator } = use('App/Helpers')
+const moment = require('moment')
 
 class ListingController {
   constructor () {
@@ -112,6 +113,34 @@ class ListingController {
           }
         })
         resolve({ active: active, inactive: inactive })
+      })
+    })
+  }
+
+  async totPaid () {
+    return new Promise(async (resolve, reject) => {
+      let options = {
+        method: 'GET',
+        url: `${Env.get('BASEURL')}/bills`,
+        headers: config.header
+      }
+      req(options, (error, response, body) => {
+        if (error) throw new Error(error)
+        const client = (JSON.parse(body)).bills
+        let paid = 0
+        let pending = 0
+        let total = 0
+        client.map(async (data) => {
+          if (data.status === 'pending') {
+            let a = moment(data.due_at)
+            let b = moment()
+            if (a.diff(b, 'seconds') < 0) pending++
+          } else {
+            total += parseFloat(data.amount)
+            paid++
+          }
+        })
+        resolve({ pago: paid, pedente: pending, total: total })
       })
     })
   }
