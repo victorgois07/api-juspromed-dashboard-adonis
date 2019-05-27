@@ -17,32 +17,53 @@ class ListingController {
       req(
         {
           method: 'GET',
-          url: `${Env.get('BASEURL')}/${this.baseurl}?sort_by=${params.filter
-            .sort_by || 'created_at'}&sort_order=${params.filter.sort_order ||
-            'desc'}`,
+          url: `${Env.get(
+            'BASEURL'
+          )}/customers?page=1&sort_by=created_at&sort_order=desc`,
           headers: config.header
         },
         (error, response, body) => {
           if (error) throw new Error(error)
-          const client = JSON.parse(body).subscriptions
-          let list = []
-          client.map(async data => {
-            console.log(data.customer.status)
-            let listclient = {}
-            listclient.id = data.customer.id
-            listclient.username = data.customer.email
-            listclient.name = data.customer.name
-            listclient.status = data.status
-            listclient.vendedor = null
-            listclient.plano = data.plan.name
-            listclient.valor =
-              data.product_items[0].pricing_schema.short_format
-            listclient.ultima = data.product_items[0].pricing_schema.created_at
-            list.push(listclient)
+          const customers = JSON.parse(body).customers
+          const promise = new Promise(async (resolve, reject) => {
+            let list = []
+            let i = 0
+            customers.map(async client => {
+              req(
+                {
+                  method: 'GET',
+                  url: `${Env.get(
+                    'BASEURL'
+                  )}/bills?page=1&per_page=1&query=customer_id:${
+                    client.id
+                  }&sort_by=created_at&sort_order=desc`,
+                  headers: config.header
+                },
+                (err, resp, value) => {
+                  if (err) throw new Error(err)
+                  const bills = JSON.parse(value).bills
+                  let listclient = {}
+                  listclient.id = client.id
+                  listclient.username = client.email
+                  listclient.name = client.name
+                  listclient.status = client.status
+                  listclient.vendedor = null
+                  listclient.plano = bills[0].subscription.plan.name
+                  listclient.valor = bills[0].charges[0].amount
+                  listclient.ultima =
+                    bills[0].charges[0].last_transaction.created_at
+                  list.push(listclient)
+                  if (i === (customers.length - 1)) {
+                    resolve(
+                      paginator(list, params.filter.page || 1, params.filter.limit || 10)
+                    )
+                  }
+                  i++
+                }
+              )
+            })
           })
-          resolve(
-            paginator(list, params.filter.page || 1, params.filter.limit || 10)
-          )
+          resolve(promise)
         }
       )
     })
@@ -104,10 +125,10 @@ class ListingController {
       }
       req(options, (error, response, body) => {
         if (error) throw new Error(error)
-        const client = (JSON.parse(body)).customers
+        const client = JSON.parse(body).customers
         let active = 0
         let inactive = 0
-        client.map(async (data) => {
+        client.map(async data => {
           if (data.status === 'inactive') {
             inactive++
           } else {
@@ -128,11 +149,11 @@ class ListingController {
       }
       req(options, (error, response, body) => {
         if (error) throw new Error(error)
-        const client = (JSON.parse(body)).bills
+        const client = JSON.parse(body).bills
         let paid = 0
         let pending = 0
         let total = 0
-        client.map(async (data) => {
+        client.map(async data => {
           let a = moment(data.charges[0].due_at)
           let b = moment()
           if (data.charges[0].status !== 'paid' && a.diff(b, 'days') < 0) {
