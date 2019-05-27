@@ -43,7 +43,7 @@ class ListingController {
                   if (err) throw new Error(err)
                   const bills = JSON.parse(value).bills
                   let listclient = {}
-                  listclient.id = client.id
+                  listclient.id = bills[0].customer.id
                   listclient.username = client.email
                   listclient.name = client.name
                   listclient.status = client.status
