@@ -13,6 +13,6 @@ module.exports = {
     'Cache-Control': 'no-cache',
     Accept: '*/*',
     'User-Agent': 'PostmanRuntime/7.13.0',
-    Authorization: `Basic ${Env.get('TOKEN_HOMOLOGACAO_VINDI')}`
+    Authorization: `Basic ${Env.get('TOKEN_PRODUCAO_VINDI')}`
   }
 }
