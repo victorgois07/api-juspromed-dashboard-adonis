@@ -41,18 +41,20 @@ class ListingController {
                 },
                 (err, resp, value) => {
                   if (err) throw new Error(err)
-                  const bills = JSON.parse(value).bills
-                  let listclient = {}
-                  listclient.id = bills[0].customer.id
-                  listclient.username = client.email
-                  listclient.name = client.name
-                  listclient.status = client.status
-                  listclient.vendedor = null
-                  listclient.plano = bills[0].subscription.plan.name
-                  listclient.valor = bills[0].charges[0].amount
-                  listclient.ultima =
-                    bills[0].charges[0].last_transaction.created_at
-                  list.push(listclient)
+                  const bills = (JSON.parse(value)).bills
+                  bills.map(async (bill) => {
+                    let listclient = {}
+                    listclient.id = bill.customer.id
+                    listclient.username = client.email
+                    listclient.name = client.name
+                    listclient.status = client.status
+                    listclient.vendedor = null
+                    listclient.plano = bill.subscription.plan.name
+                    listclient.valor = bill.charges[0].amount
+                    listclient.ultima =
+                      bill.charges[0].last_transaction.created_at
+                    list.push(listclient)
+                  })
                   if (i === (customers.length - 1)) {
                     resolve(
                       paginator(list, params.filter.page || 1, params.filter.limit || 10)
