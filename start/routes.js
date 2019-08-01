@@ -3,7 +3,7 @@
 const Route = use('Route')
 
 Route.post('/api/sessions', 'SessionController.store').validator('Session')
-Route.get('/api/woocommerce', 'WooComerceController.index')
+Route.get('/api/woocommerce', 'WooComerceController.sales')
 
 Route.group(() => {
   Route.resource('/api/user_type', 'UserTypeController')
