@@ -12,8 +12,8 @@ class RemunerationSchema extends Schema {
       table.decimal('value_bonus', 8, 2).notNullable().unique()
       table.string('description', 254)
 
-      table.integer('user_salesman_id').unsigned().references('id').inTable('users').onDelete('set null')
-      table.integer('sale_id').unsigned().references('id').inTable('sales').onDelete('set null')
+      table.integer('user_salesman_id').unsigned().references('id').inTable('users')
+      table.integer('sale_id').unsigned().references('id').inTable('sales')
       table.timestamps()
     })
   }

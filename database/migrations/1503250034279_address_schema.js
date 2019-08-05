@@ -12,7 +12,7 @@ class AddressSchema extends Schema {
       table.string('additional_details', 254).notNullable()
       table.string('street', 254).notNullable()
       table.string('neighborhood', 254)
-      table.integer('city_id').unsigned().references('id').inTable('city').onDelete('set null')
+      table.integer('city_id').unsigned().references('id').inTable('cities')
       table.timestamps()
     })
   }

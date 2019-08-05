@@ -13,11 +13,11 @@ class SaleSchema extends Schema {
       table.integer('gateway_transaction_id', 254).notNullable()
       table.date('maturity', 254).notNullable()
 
-      table.integer('payment_status_id').unsigned().references('id').inTable('payment_statuses').onDelete('set null')
-      table.integer('payment_method_id').unsigned().references('id').inTable('payment_methods').onDelete('set null')
-      table.integer('user_client_id').unsigned().references('id').inTable('users').onDelete('set null')
-      table.integer('user_salesman_id').unsigned().references('id').inTable('users').onDelete('set null')
-      table.integer('plan_id').unsigned().references('id').inTable('plans').onDelete('set null')
+      table.integer('payment_status_id').unsigned().references('id').inTable('payment_statuses')
+      table.integer('payment_method_id').unsigned().references('id').inTable('payment_methods')
+      table.integer('user_client_id').unsigned().references('id').inTable('users')
+      table.integer('user_salesman_id').unsigned().references('id').inTable('users')
+      table.integer('plan_id').unsigned().references('id').inTable('plans')
 
       table.timestamps()
     })

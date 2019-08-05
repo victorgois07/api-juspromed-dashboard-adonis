@@ -17,9 +17,9 @@ class UserSchema extends Schema {
       table.string('description', 254)
       table.integer('active').notNullable()
 
-      table.integer('plan_id').unsigned().references('id').inTable('plans').onDelete('set null')
-      table.integer('user_type_id').unsigned().references('id').inTable('user_types').onDelete('set null')
-      table.integer('address_id').unsigned().references('id').inTable('addresses').onDelete('set null')
+      table.integer('plan_id').unsigned().references('id').inTable('plans')
+      table.integer('user_type_id').unsigned().references('id').inTable('user_types')
+      table.integer('address_id').unsigned().references('id').inTable('addresses')
 
       table.timestamps()
     })
