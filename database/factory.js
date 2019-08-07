@@ -14,3 +14,26 @@ Factory.blueprint('App/Models/User', faker => {
     address_id: 1
   }
 })
+
+Factory.blueprint('App/Models/State', (faker) => {
+  return {
+    description: 'Distrito Federal',
+    country: 'Brasil'
+  }
+})
+
+Factory.blueprint('App/Models/City', (faker) => {
+  return {
+    description: 'Brasília'
+  }
+})
+
+Factory.blueprint('App/Models/Address', (faker) => {
+  return {
+    'zipcode': '',
+    'number': '',
+    'additional_details': '',
+    'street': '',
+    'neighborhood': ''
+  }
+})
