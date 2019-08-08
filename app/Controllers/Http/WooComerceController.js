@@ -1,55 +1,73 @@
 const Env = use('Env')
 const WooCommerceRestApi = require('@woocommerce/woocommerce-rest-api').default;
 
+
 let WooCommerce = new WooCommerceRestApi({
   url: 'https://juspromed.com/',
   consumerKey: Env.get('CONSUMER_KEY'),
   consumerSecret: Env.get('CONSUMER_SECRET'),
   wpAPIPrefix: 'wc-api',
-  version: 'v3'
+  version: 'v2'
 })
 
 class WooCommerceController {
-  async index ({ response }) {
-    // WooCommerce.getAsync('products').then(function (result) {
-    //   console.log('result', result)
-    //   response.send(JSON.parse(result.toJSON().body))
-    // }).catch(function (error) {
-    //   console.log('error', error)
-    // })
+  async products ({ response }) {
     try {
-      let result = await WooCommerce.getAsync('products')
-      console.log('result', result.body)
-      return response.send(JSON.parse(result.body))
+      let result = await WooCommerce.get('products')
+      console.log('Response Status:', result.status)
+      console.log('Response Headers:', result.headers)
+      console.log('Total of pages:', result.headers['x-wc-totalpages'])
+      console.log('Total of items:', result.headers['x-wc-total'])
+      console.log('respose', typeof result.data['products'])
+      return response.send(result.data['products'])
     } catch (err) {
+      console.log('err', err)
       return response.status(err.status).send(err)
     }
   }
 
   async customers ({ response }) {
     try {
-      let result = await WooCommerce.getAsync('customers?role=customer')
-      const customers = JSON.parse(result.body)
-      return response.send(customers['customers'])
+      console.log('customers')
+      let result = await WooCommerce.get('customers')
+      console.log('Response Status:', result.status)
+      console.log('Response Headers:', result.headers)
+      console.log('Total of pages:', result.headers['x-wc-totalpages'])
+      console.log('Total of items:', result.headers['x-wc-total'])
+      console.log('respose', typeof result.data['orders'])
+      return response.send(result.data['customers'])
     } catch (err) {
+      console.log('err', err)
       return response.status(err.status).send(err)
     }
   }
 
   async customersOrders ({ params, response }) {
     try {
-      console.log('customer orders', `orders?customer=${params.id}&status=completed`)
-      console.log('woocomerce', WooCommerce)
-      let response_orders = await WooCommerce.get('orders?filter[status]=completed', {
-        status: 'completed',
-        per_page: 2
-      })
-      console.log('Response Status:', response_orders.status)
-      console.log('Response Headers:', response_orders.headers)
-      console.log('Total of pages:', response_orders.headers['x-wc-totalpages'])
-      console.log('Total of items:', response_orders.headers['x-wc-total'])
-      console.log('respose', typeof response_orders.data['orders'])
-      return response.send(response_orders.data['orders'])
+      let result = await WooCommerce.get(`customers/${params.id}/orders`)
+      console.log('Response Status:', result.status)
+      console.log('Total of pages:', result.headers['x-wc-totalpages'])
+      console.log('Total of items:', result.headers['x-wc-total'])
+      console.log('respose', typeof result.data['orders'])
+      return response.send(result.data['orders'])
+    } catch (err) {
+      console.log('err', err)
+      return response.status(err.status).send(err)
+    }
+  }
+
+  async orders ({ params, response }) {
+    try {
+      console.log('params', params)
+      let url = params.id !== null ? `orders/${params.id}` : 'orders'
+      let indice = params.id !== null ? 'order' : 'orders'
+      console.log('url', url, indice)
+      let result = await WooCommerce.get(url)
+      console.log('Response Status:', result.status)
+      console.log('Total of pages:', result.headers['x-wc-totalpages'])
+      console.log('Total of items:', result.headers['x-wc-total'])
+      console.log('respose', typeof result.data[indice])
+      return response.send(result.data[indice])
     } catch (err) {
       console.log('err', err)
       return response.status(err.status).send(err)
@@ -58,9 +76,9 @@ class WooCommerceController {
 
   async sales ({ response }) {
     try {
-      let result = await WooCommerce.getAsync('orders?filter[meta]=true')
-      let orders = JSON.parse(result.body)
-      orders = orders['orders']
+      let result = await WooCommerce.get('orders?filter[meta]=true')
+      console.log('data', result)
+      let orders = result.data['orders']
       let totalBySeller = {}
       for (let order of orders) {
         if (!(order['order_meta']['myfield8'] in totalBySeller)) {
@@ -87,6 +105,7 @@ class WooCommerceController {
       }
       return response.send(resul)
     } catch (err) {
+      console.log('err', err)
       return response.status(err.status).send(err)
     }
   }
