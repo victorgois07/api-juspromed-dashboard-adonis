@@ -28,10 +28,16 @@ Factory.blueprint('App/Models/City', (faker) => {
   }
 })
 
+Factory.blueprint('App/Models/UserType', (faker) => {
+  return {
+    description: 'sytem-user'
+  }
+})
+
 Factory.blueprint('App/Models/Address', (faker) => {
   return {
-    'zipcode': '',
-    'number': '',
+    'zipcode': '72465-370',
+    'number': 2,
     'additional_details': '',
     'street': '',
     'neighborhood': ''

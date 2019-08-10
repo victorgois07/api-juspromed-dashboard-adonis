@@ -4,6 +4,14 @@
 const Model = use('Model')
 
 class City extends Model {
+
+  state () {
+    return this.belongsTo('App/Models/State')
+  }
+
+  addresses () {
+    return this.hasMany('App/Models/Address')
+  }
 }
 
 module.exports = City
