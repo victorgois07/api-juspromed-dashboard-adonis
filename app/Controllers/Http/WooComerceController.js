@@ -26,16 +26,18 @@ class WooCommerceController {
     }
   }
 
-  async customers ({ response }) {
+  async customers ({ params, response }) {
     try {
       console.log('customers')
-      let result = await WooCommerce.get('customers')
+      let url = params.id !== null ? `customers/${params.id}` : 'customers'
+      let indice = params.id !== null ? 'customer' : 'customers'
+      let result = await WooCommerce.get(url)
       console.log('Response Status:', result.status)
       console.log('Response Headers:', result.headers)
       console.log('Total of pages:', result.headers['x-wc-totalpages'])
       console.log('Total of items:', result.headers['x-wc-total'])
-      console.log('respose', typeof result.data['orders'])
-      return response.send(result.data['customers'])
+      console.log('respose', typeof result.data[indice])
+      return response.send(result.data[indice])
     } catch (err) {
       console.log('err', err)
       return response.status(err.status).send(err)

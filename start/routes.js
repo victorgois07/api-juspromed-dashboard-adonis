@@ -5,7 +5,7 @@ const Route = use('Route')
 Route.post('/api/sessions', 'SessionController.store').validator('Session')
 Route.get('/api/woocommerce/sales', 'WooComerceController.sales')
 Route.get('/api/woocommerce/products', 'WooComerceController.products')
-Route.get('/api/woocommerce/customers', 'WooComerceController.customers')
+Route.get('/api/woocommerce/customers/:id?', 'WooComerceController.customers')
 Route.get('/api/woocommerce/orders/:id?', 'WooComerceController.orders')
 Route.get('/api/woocommerce/customers/orders/:id', 'WooComerceController.customersOrders')
 
